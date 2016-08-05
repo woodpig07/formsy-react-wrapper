@@ -1,0 +1,22 @@
+.*
+!.gitignore
+!.npmignore
+!.travis.yml
+!.coveralls.yml
+
+*.orig
+
+/dev
+/dist
+/static
+/backup
+/test/debug
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directory
+node_modules
+
