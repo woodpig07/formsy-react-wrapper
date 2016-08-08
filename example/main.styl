@@ -1,5 +1,58 @@
+@import 'nib'
+
+normalize-css()
+global-reset()
+
+//global
+*
+  box-sizing border-box
+  
 body
-  margin 0
+  font-size 16px
+  color #4e4e4e
+
+h2
+  font-size 1.4em
+
+.container
+  max-width 40em
+  width 100%
+  margin auto
+  padding 0 1em
+  
+section
+  padding 1.2em 0
   
 form
-  padding 0
+  margin 1.2em 0
+
+// form components
+.form-item
+  label
+    text-transform uppercase
+    
+  > div
+    margin 0.75em 0
+    
+  input
+    border 1px solid #d8d8d8
+    padding 0.5em
+    width 100%
+    &:focus,
+    &:active
+      outline none
+
+  .errorInfo
+    color #C9391F
+    display none
+    
+  .error
+    input
+      border 1px solid #C9391F
+    .errorInfo
+      display block
+      
+.showFormError
+  .required
+    input
+      border-color #C9391F

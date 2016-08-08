@@ -63,5 +63,9 @@ module.exports = {
       test: /\.(png|jpg|gif|ico|ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
       loader: 'file?name=[path][name].[ext]?[hash:6]'
     }]
+  },
+  stylus: {
+    use: [require('nib')()],
+    import: path.join(__dirname,'../node_modules/nib/index.styl')
   }
 }
