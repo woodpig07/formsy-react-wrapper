@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import Formsy from 'formsy-react'
+import _omit from 'lodash.omit'
 
 var FormsyWrapper = {}
 var asyncValidationRules = {}
@@ -20,14 +21,17 @@ class FormsyFormWrapper extends Component {
 
   constructor (props) {
     super(props)
-    this.state = {formClass: ''}
+    this.state = {
+      isValid: false,
+      formClass: ''
+    }
   }
 
   getChildContext () {
-    console.log(this.refs.formsy)
     return {
       formsyWrapper: {
-        getAsyncValidationRules: this.getAsyncValidationRules
+        getAsyncValidationRules: this.getAsyncValidationRules,
+        setAsyncValidationState: this.setAsyncValidationState.bind(this)
       }
     }
   }
@@ -36,25 +40,55 @@ class FormsyFormWrapper extends Component {
     return asyncValidationRules
   }
 
-  componentDidMount () {
-    console.log(this.refs.formsy.getModel())
-  }
-
-  notifyFormError () {
-    this.setState({formClass: 'showFormError'})
+  setAsyncValidationState (isValid) {
+    this.setState({isValid: isValid})
   }
 
   reset () {
     this.refs.formsy.reset()
   }
 
-  resetFormError () {
+  onChange (currentValues, isChanged) {
+    const {onChange} = this.props
     this.setState({formClass: ''})
+    return onChange && onChange(currentValues, isChanged)
+  }
+
+  onInvalidSubmit (data, resetForm, invalidateForm) {
+    const {onInvalidSubmit} = this.props
+    this.setState({formClass: 'showFormError'})
+    return onInvalidSubmit && onInvalidSubmit(data, resetForm, invalidateForm)
+  }
+
+  onValidSubmit (data, resetForm, invalidateForm) {
+    const {onValidSubmit} = this.props
+    const {isValid} = this.state
+    if (isValid) {
+      return onValidSubmit && onValidSubmit(data, resetForm, invalidateForm)
+    }
+    return false
+  }
+
+  onSubmit (data, resetForm, invalidateForm) {
+    const {onSubmit} = this.props
+    const {isValid} = this.state
+    if (isValid) {
+      return onSubmit && onSubmit(data, resetForm, invalidateForm)
+    }
+    return false
   }
 
   render () {
+    let newProps = {
+      ...this.props,
+      onChange: this.onChange.bind(this),
+      onSubmit: this.onSubmit.bind(this),
+      onInvalidSubmit: this.onInvalidSubmit.bind(this),
+      onValidSubmit: this.onValidSubmit.bind(this),
+      className: `${this.props.className || ''} ${this.state.formClass}`
+    }
     return (
-      <Formsy.Form onInvalidSubmit={::this.notifyFormError} className={`form ${this.state.formClass}`} {...this.props} ref='formsy'>
+      <Formsy.Form {...newProps} ref='formsy'>
         {this.props.children}
       </Formsy.Form>
     )

@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import {Decorator as FormsyElement} from 'formsy-react'
 import classnames from 'classnames'
+import debounce from './debounce'
 
 @FormsyElement()
 class BaseInput extends Component {
@@ -31,6 +32,9 @@ class BaseInput extends Component {
     this.state = {
       responseError: null
     }
+    this.debouncedHandleAsyncValidations = debounce(() => {
+      this.handleAsyncValidations.call(this, this.state.fieldValue)
+    }, 500)
   }
 
   handleChange (e) {
@@ -40,40 +44,52 @@ class BaseInput extends Component {
     let value = e.target.value
     let {asyncValidations} = this.props
 
-    if (asyncValidations) {
-      const {formsyWrapper} = this.context
-      const asyncValidationRules = formsyWrapper.getAsyncValidationRules()
-      let asyncValidationPromise = []
+    this.props.setValue(value)
+    this.setState({fieldValue: value})
 
-      if (typeof asyncValidations === 'string') {
-        asyncValidations.split(',').forEach((validatorName) => {
-          var validationMethod
-          if (validationMethod = asyncValidationRules[validatorName]) {
-            asyncValidationPromise.push(validationMethod(value))
-          }
-        })
-      } else if (typeof asyncValidations === 'object') {
-        Object.keys(asyncValidations).forEach((validatorName) => {
-          var validationMethod
-          if (validationMethod = asyncValidationRules[validatorName]) {
-            asyncValidationPromise.push(validationMethod(value, asyncValidations[validatorName]))
-          }
-        })
-      }
-      return Promise.all(asyncValidationPromise)
-        .then(() => {
-          return this.props.setValue(value)
-        })
-        .catch(err => {
-          console.log(err)
-          err = this.getAsyncErrorMessage(err)
-            ? this.getAsyncErrorMessage(err)
-            : err
-
-          return this.setState({responseError: err})
-        })
+    // only start asynchronous validations when synchronous validations scucess
+    if (asyncValidations && this.props.isValid()) {
+      this.debouncedHandleAsyncValidations()
     }
-    return this.props.setValue(value)
+  }
+
+  handleAsyncValidations (value) {
+    if (!value) {
+      return
+    }
+    let {asyncValidations} = this.props
+    const {formsyWrapper} = this.context
+    const asyncValidationRules = formsyWrapper.getAsyncValidationRules()
+    let asyncValidationPromise = []
+
+    if (typeof asyncValidations === 'string') {
+      asyncValidations.split(',').forEach((validatorName) => {
+        var validationMethod
+        if (validationMethod = asyncValidationRules[validatorName]) {
+          asyncValidationPromise.push(validationMethod(value))
+        }
+      })
+    } else if (typeof asyncValidations === 'object') {
+      Object.keys(asyncValidations).forEach((validatorName) => {
+        var validationMethod
+        if (validationMethod = asyncValidationRules[validatorName]) {
+          asyncValidationPromise.push(validationMethod(value, asyncValidations[validatorName]))
+        }
+      })
+    }
+    return Promise.all(asyncValidationPromise)
+      .then(() => {
+        return formsyWrapper.setAsyncValidationState(true)
+      })
+      .catch(err => {
+        console.log(err)
+        err = this.getAsyncErrorMessage(err)
+          ? this.getAsyncErrorMessage(err)
+          : err
+
+        formsyWrapper.setAsyncValidationState(false) 
+        return this.setState({responseError: err})
+      })
   }
 
   getAsyncErrorMessage (validatorName) {
