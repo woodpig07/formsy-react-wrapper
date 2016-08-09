@@ -1,9 +1,10 @@
 {
   "name": "formsy-react-wrapper",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Enhanced formsy-react component to handle asynchronous validations",
   "main": "index.js",
   "scripts": {
+    "build": "NODE_ENV=production webpack -p --config webpack.production.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "example": "webpack-dev-server --config example/webpack.config.js --content-base example"
   },
