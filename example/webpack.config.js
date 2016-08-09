@@ -1,8 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
-const ProgressBar = require('progress-bar-webpack-plugin')
-console.log(path.resolve(__dirname))
+var ProgressBar = require('progress-bar-webpack-plugin')
 
 module.exports = {
   debug: true,

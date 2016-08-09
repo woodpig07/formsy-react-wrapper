@@ -64,15 +64,15 @@ class BaseInput extends Component {
 
     if (typeof asyncValidations === 'string') {
       asyncValidations.split(',').forEach((validatorName) => {
-        var validationMethod
-        if (validationMethod = asyncValidationRules[validatorName]) {
+        var validationMethod = asyncValidationRules[validatorName]
+        if (validationMethod) {
           asyncValidationPromise.push(validationMethod(value))
         }
       })
     } else if (typeof asyncValidations === 'object') {
       Object.keys(asyncValidations).forEach((validatorName) => {
-        var validationMethod
-        if (validationMethod = asyncValidationRules[validatorName]) {
+        var validationMethod = asyncValidationRules[validatorName]
+        if (validationMethod) {
           asyncValidationPromise.push(validationMethod(value, asyncValidations[validatorName]))
         }
       })
@@ -87,7 +87,7 @@ class BaseInput extends Component {
           ? this.getAsyncErrorMessage(err)
           : err
 
-        formsyWrapper.setAsyncValidationState(false) 
+        formsyWrapper.setAsyncValidationState(false)
         return this.setState({responseError: err})
       })
   }
@@ -106,13 +106,10 @@ class BaseInput extends Component {
     let {
       type,
       name,
-      locale,
       className,
-      getValue,
       showRequired,
       showError,
-      getErrorMessage,
-      placeholder
+      getErrorMessage
     } = this.props
     let classes = classnames(className, {'error': showError() || this.state.responseError, 'required': showRequired()})
     let errorMessage = showError() ? getErrorMessage() : this.state.responseError
@@ -122,7 +119,7 @@ class BaseInput extends Component {
         <input
           type={type || 'text'}
           name={name}
-          onChange={::this.handleChange}/>
+          onChange={::this.handleChange} />
         <span className='errorInfo'>{errorMessage}</span>
       </div>
     )
@@ -141,10 +138,6 @@ export default class FormsyInput extends Component {
     validationErrors: PropTypes.object
   }
 
-  constructor (props) {
-    super(props)
-  }
-
   resetValue () {
     this.refs.baseInput.resetValue()
   }
@@ -161,7 +154,7 @@ export default class FormsyInput extends Component {
           : validationErrors[validatorName]
       })
       newProps = {...this.props, validationErrors: parsedObj}
-      return <BaseInput {...newProps} ref='baseInput'/>
+      return <BaseInput {...newProps} ref='baseInput' />
     }
 
     if (locale && validationError) {
@@ -172,13 +165,13 @@ export default class FormsyInput extends Component {
         parsedObj = validationError[locale] ? validationError[locale] : validationError.toString()
       }
       newProps = {...this.props, validationError: parsedObj}
-      return <BaseInput {...newProps} ref='baseInput'/>
+      return <BaseInput {...newProps} ref='baseInput' />
     }
 
     return (
       <BaseInput
-      {...this.props}
-      ref='baseInput'/>
+        {...this.props}
+        ref='baseInput' />
     )
   }
 }
