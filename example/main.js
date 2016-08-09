@@ -15,7 +15,6 @@ FormsyWrapper.addAsyncValidationRule('isUniqueUser', (value, optionalVal) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve('isUniqueUser')
-
     }, 2000)
   })
 })
@@ -24,7 +23,6 @@ FormsyWrapper.addAsyncValidationRule('isUniqueEmail', (value, optionalVal) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       reject('isUniqueEmail')
-
     }, 2000)
   })
 })
@@ -66,8 +64,8 @@ class App extends Component {
               <label>username</label>
               <FormsyInput
                 name='username'
-                validations="isAlpha"
-                validationError="Username has to be letter only!"
+                validations='isAlpha'
+                validationError='Username has to be letter only!'
                 asyncValidations='isUniqueUser'
                 asyncValidationErrors={{isUniqueUser: 'username has to be unique'}}
                 required />
@@ -83,8 +81,8 @@ class App extends Component {
               <label>user email</label>
               <FormsyInput
                 name='email'
-                validations="isEmail"
-                validationError="This is not an email!"
+                validations='isEmail'
+                validationError='This is not an email!'
                 asyncValidations='isUniqueEmail'
                 asyncValidationErrors={{isUniqueEmail: 'Email has to be unique'}}
                 required />
@@ -95,13 +93,13 @@ class App extends Component {
         </section>
         <section>
           <h2>Failed asynchronous validation and translation setup</h2>
-            <span>click button to change locale to <button type='text' onClick={::this.handleClick}>{this.state.locale === 'en' ? 'zh' : 'en'}</button></span>
+          <span>click button to change locale to <button type='text' onClick={::this.handleClick}>{this.state.locale === 'en' ? 'zh' : 'en'}</button></span>
           <FormsyWrapper.Form onValidSubmit={::this.onForm3Submit} className='form'>
             <div className='form-item'>
               <label>user email</label>
               <FormsyInput
                 name='email'
-                validations="isEmail"
+                validations='isEmail'
                 validationError={{en: 'This is not an email!', zh: '非email格式'}}
                 asyncValidations='isUniqueEmail'
                 asyncValidationErrors={{isUniqueEmail: {en: 'Email has to be unique', zh: 'email必须是唯一的'}}}

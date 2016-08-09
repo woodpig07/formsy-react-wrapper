@@ -54,10 +54,10 @@ module.exports = {
       loader: 'babel'
     }, {
       test: /\.css$/,
-      loader: "style-loader!css-loader"
+      loader: 'style-loader!css-loader'
     }, {
       test: /\.styl$/,
-      loader: "style-loader!css-loader!stylus-loader"
+      loader: 'style-loader!css-loader!stylus-loader'
     }, {
       test: /\.(png|jpg|gif|ico|ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
       loader: 'file?name=[path][name].[ext]?[hash:6]'
@@ -65,6 +65,6 @@ module.exports = {
   },
   stylus: {
     use: [require('nib')()],
-    import: path.join(__dirname,'../node_modules/nib/index.styl')
+    import: path.join(__dirname, '../node_modules/nib/index.styl')
   }
 }

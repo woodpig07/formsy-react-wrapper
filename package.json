@@ -49,8 +49,7 @@
   },
   "standard": {
     "ignore": [
-      "/build/",
-      "/example/"
+      "/build/"
     ],
     "parser": "babel-eslint"
   }
