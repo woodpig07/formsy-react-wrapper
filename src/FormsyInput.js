@@ -109,6 +109,7 @@ class BaseInput extends Component {
       className,
       showRequired,
       showError,
+      getValue,
       getErrorMessage
     } = this.props
     let classes = classnames(className, {'error': showError() || this.state.responseError, 'required': showRequired()})
@@ -119,6 +120,7 @@ class BaseInput extends Component {
         <input
           type={type || 'text'}
           name={name}
+          value={getValue() || ''}
           onChange={::this.handleChange} />
         <span className='errorInfo'>{errorMessage}</span>
       </div>

@@ -43,22 +43,54 @@ class FormsyFormWrapper extends Component {
     this.setState({isValid: isValid})
   }
 
+  /* Porting <Formsy.Form /> reset() */
   reset () {
     this.refs.formsy.reset()
   }
 
+  /* Porting <Formsy.Form /> getModel() */
+  getModel () {
+    this.refs.formsy.getModel()
+  }
+
+  /* Porting <Formsy.Form /> updateInputsWithError() */
+  updateInputsWithError (errors) {
+    this.refs.formsy.updateInputsWithError(errors)
+  }
+
+  /* Porting <Formsy.Form /> onValid() */
+  onValid () {
+    const {onValid} = this.props
+    const {isValid} = this.state
+    if (isValid) {
+      return onValid && onValid()
+    }    
+  }
+
+  /* Porting <Formsy.Form /> onInvalid() */
+  onInvalid () {
+    const {onInvalid} = this.props
+    const {isValid} = this.state
+    if (!isValid) {
+      return onInvalid && onInvalid()
+    }    
+  }
+
+  /* Porting <Formsy.Form /> onChange() */
   onChange (currentValues, isChanged) {
     const {onChange} = this.props
     this.setState({formClass: ''})
     return onChange && onChange(currentValues, isChanged)
   }
 
+  /* Porting <Formsy.Form /> onInvalidSubmit() */
   onInvalidSubmit (data, resetForm, invalidateForm) {
     const {onInvalidSubmit} = this.props
     this.setState({formClass: 'showFormError'})
     return onInvalidSubmit && onInvalidSubmit(data, resetForm, invalidateForm)
   }
 
+  /* Porting <Formsy.Form /> onValidSubmit() */
   onValidSubmit (data, resetForm, invalidateForm) {
     const {onValidSubmit} = this.props
     const {isValid} = this.state
@@ -68,6 +100,7 @@ class FormsyFormWrapper extends Component {
     return false
   }
 
+  /* Porting <Formsy.Form /> onSubmit() */
   onSubmit (data, resetForm, invalidateForm) {
     const {onSubmit} = this.props
     const {isValid} = this.state
@@ -80,6 +113,8 @@ class FormsyFormWrapper extends Component {
   render () {
     let newProps = {
       ...this.props,
+      onValid: this.onValid.bind(this),
+      onInvalid: this.onInvalid.bind(this),
       onChange: this.onChange.bind(this),
       onSubmit: this.onSubmit.bind(this),
       onInvalidSubmit: this.onInvalidSubmit.bind(this),
