@@ -28,6 +28,8 @@ form
 
 // form components
 .form-item
+  position relative
+  
   label
     text-transform uppercase
     
@@ -56,3 +58,26 @@ form
   .required
     input
       border-color #C9391F
+
+.spinner
+  display none
+  position absolute
+  right 0
+  top 10px
+  width 32px
+  height 32px
+  clear both
+  margin 20px auto
+  border 4px rgba(#000,0.25) solid
+  border-top 4px rgba(#000,1) solid
+  border-radius 50%
+  animation spinning .6s infinite linear
+  
+@keyframes spinning {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(359deg); }
+}
+
+.validating 
+  & + .spinner
+    display inline-block

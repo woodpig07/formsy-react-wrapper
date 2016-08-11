@@ -7,7 +7,7 @@ require('babel-polyfill')
 import React, {Component} from 'react'
 import {render} from 'react-dom'
 import FormsyWrapper from '../src/FormsyWrapper'
-import FormsyInput from '../src/FormsyInput'
+// import FormsyWrapper.Input from '../src/FormsyInput'
 
 require('./main.styl')
 
@@ -62,13 +62,14 @@ class App extends Component {
           <FormsyWrapper.Form onValidSubmit={::this.onForm1Submit} className='form'>
             <div className='form-item'>
               <label>username</label>
-              <FormsyInput
+              <FormsyWrapper.Input
                 name='username'
                 validations='isAlpha'
                 validationError='Username has to be letter only!'
                 asyncValidations='isUniqueUser'
                 asyncValidationErrors={{isUniqueUser: 'username has to be unique'}}
                 required />
+              <span className='spinner' />
             </div>
             <button type='submit' >submit</button>
             {this.state && this.state.form1Result}
@@ -79,13 +80,14 @@ class App extends Component {
           <FormsyWrapper.Form onValidSubmit={::this.onForm2Submit} className='form'>
             <div className='form-item'>
               <label>user email</label>
-              <FormsyInput
+              <FormsyWrapper.Input
                 name='email'
                 validations='isEmail'
                 validationError='This is not an email!'
                 asyncValidations='isUniqueEmail'
                 asyncValidationErrors={{isUniqueEmail: 'Email has to be unique'}}
                 required />
+              <span className='spinner' />
             </div>
             <button type='submit' >submit</button>
             {this.state && this.state.form2Result}
@@ -97,7 +99,7 @@ class App extends Component {
           <FormsyWrapper.Form onValidSubmit={::this.onForm3Submit} className='form'>
             <div className='form-item'>
               <label>user email</label>
-              <FormsyInput
+              <FormsyWrapper.Input
                 name='email'
                 validations='isEmail'
                 validationError={{en: 'This is not an email!', zh: '非email格式'}}
@@ -105,6 +107,7 @@ class App extends Component {
                 asyncValidationErrors={{isUniqueEmail: {en: 'Email has to be unique', zh: 'email必须是唯一的'}}}
                 locale={this.state.locale}
                 required />
+              <span className='spinner' />
             </div>
             <button type='submit' >submit</button>
             {this.state && this.state.form3Result}
