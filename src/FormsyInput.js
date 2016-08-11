@@ -30,11 +30,12 @@ class BaseInput extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      isValidating: false,
       responseError: null
     }
     this.debouncedHandleAsyncValidations = debounce(() => {
       this.handleAsyncValidations.call(this, this.state.fieldValue)
-    }, 500)
+    }, 300)
   }
 
   handleChange (e) {
@@ -62,6 +63,8 @@ class BaseInput extends Component {
     const asyncValidationRules = formsyWrapper.getAsyncValidationRules()
     let asyncValidationPromise = []
 
+    this.setState({isValidating: true})
+
     if (typeof asyncValidations === 'string') {
       asyncValidations.split(',').forEach((validatorName) => {
         var validationMethod = asyncValidationRules[validatorName]
@@ -79,7 +82,8 @@ class BaseInput extends Component {
     }
     return Promise.all(asyncValidationPromise)
       .then(() => {
-        return formsyWrapper.setAsyncValidationState(true)
+        formsyWrapper.setAsyncValidationState(true)
+        return this.setState({isValidating: false})
       })
       .catch(err => {
         console.log(err)
@@ -88,7 +92,7 @@ class BaseInput extends Component {
           : err
 
         formsyWrapper.setAsyncValidationState(false)
-        return this.setState({responseError: err})
+        return this.setState({isValidating: false, responseError: err})
       })
   }
 
@@ -112,7 +116,11 @@ class BaseInput extends Component {
       getValue,
       getErrorMessage
     } = this.props
-    let classes = classnames(className, {'error': showError() || this.state.responseError, 'required': showRequired()})
+    let classes = classnames(className, {
+      'error': showError() || this.state.responseError,
+      'required': showRequired(),
+      'validating': this.state.isValidating
+    })
     let errorMessage = showError() ? getErrorMessage() : this.state.responseError
 
     return (

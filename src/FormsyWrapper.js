@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import Formsy from 'formsy-react'
+import FormsyInput from './FormsyInput'
 
 var FormsyWrapper = {}
 var asyncValidationRules = {}
@@ -130,5 +131,6 @@ class FormsyFormWrapper extends Component {
 }
 
 FormsyWrapper.Form = FormsyFormWrapper
+FormsyWrapper.Input = FormsyInput
 
 export default FormsyWrapper
