@@ -9,7 +9,7 @@ module.exports = {
   context: path.resolve(__dirname),
   entry: {
     app: [
-      path.resolve(__dirname, 'main.js')
+      './main.js'
     ],
     vendors: [
       'es5-shim',
@@ -23,8 +23,7 @@ module.exports = {
   output: {
     filename: '[name].js',
     chunkFilename: '[id].js',
-    path: path.resolve(__dirname, 'dev'),
-    publicPath: '/'
+    path: './'
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js'),
