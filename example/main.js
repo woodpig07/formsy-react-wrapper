@@ -7,14 +7,13 @@ require('babel-polyfill')
 import React, {Component} from 'react'
 import {render} from 'react-dom'
 import FormsyWrapper from '../src/FormsyWrapper'
-// import FormsyWrapper.Input from '../src/FormsyInput'
 
 require('./main.styl')
 
 FormsyWrapper.addAsyncValidationRule('isUniqueUser', (value, optionalVal) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve('isUniqueUser')
+      resolve('Success')
     }, 2000)
   })
 })
@@ -22,7 +21,7 @@ FormsyWrapper.addAsyncValidationRule('isUniqueUser', (value, optionalVal) => {
 FormsyWrapper.addAsyncValidationRule('isUniqueEmail', (value, optionalVal) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      reject('isUniqueEmail')
+      reject('Fail')
     }, 2000)
   })
 })

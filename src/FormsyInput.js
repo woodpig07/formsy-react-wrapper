@@ -3,6 +3,19 @@ import {Decorator as FormsyElement} from 'formsy-react'
 import classnames from 'classnames'
 import debounce from './debounce'
 
+// wrap async validation promise so the passed error can have information about validator name
+function wrapPromise (promise, validatorName) {
+  return new Promise((resolve, reject) => {
+    return promise
+      .then((payload) => {
+        resolve(payload)
+      },
+      (err) => {
+        reject({validatorName: validatorName, error: err})
+      })   
+  })
+}
+
 @FormsyElement()
 class BaseInput extends Component {
 
@@ -69,14 +82,16 @@ class BaseInput extends Component {
       asyncValidations.split(',').forEach((validatorName) => {
         var validationMethod = asyncValidationRules[validatorName]
         if (validationMethod) {
-          asyncValidationPromise.push(validationMethod(value))
+          var p = wrapPromise(validationMethod(value), validatorName)
+          asyncValidationPromise.push(p)
         }
       })
     } else if (typeof asyncValidations === 'object') {
       Object.keys(asyncValidations).forEach((validatorName) => {
         var validationMethod = asyncValidationRules[validatorName]
         if (validationMethod) {
-          asyncValidationPromise.push(validationMethod(value, asyncValidations[validatorName]))
+          var p = wrapPromise(validationMethod(value, asyncValidations[validatorName]), validatorName)
+          asyncValidationPromise.push(p)
         }
       })
     }
@@ -86,13 +101,10 @@ class BaseInput extends Component {
         return this.setState({isValidating: false})
       })
       .catch(err => {
-        console.log(err)
-        err = this.getAsyncErrorMessage(err)
-          ? this.getAsyncErrorMessage(err)
-          : err
+        var msg = this.getAsyncErrorMessage(err.validatorName)
 
         formsyWrapper.setAsyncValidationState(false)
-        return this.setState({isValidating: false, responseError: err})
+        return this.setState({isValidating: false, responseError: msg})
       })
   }
 
