@@ -2,9 +2,13 @@
   "name": "formsy-react-wrapper",
   "version": "0.0.1",
   "description": "Enhanced formsy-react component to handle asynchronous validations",
-  "main": "index.js",
+  "repository": {
+     "type": "git",
+     "url": "https://github.com/woodpig07/formsy-react-wrapper.git" 
+  },
+  "main": "lib/FormsyWrapper.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack -p --config webpack.production.config.js",
+    "build": "babel src -d lib --ignore __test__/*",
     "lint": "snazzy --verbose",
     "test": "./node_modules/karma/bin/karma start",
     "example": "webpack-dev-server --config example/webpack.config.js --content-base example",
@@ -15,6 +19,9 @@
     "formsy-react",
     "asynchronous"
   ],
+  "engines": {
+    "node": ">=4.4.4"
+  },
   "author": "woodpig07@gmail.com",
   "license": "MIT",
   "devDependencies": {
@@ -36,7 +43,6 @@
     "es5-shim": "^4.5.9",
     "es6-shim": "^0.35.1",
     "html-webpack-plugin": "^2.22.0",
-    "jsdom": "^9.4.1",
     "karma": "^1.1.2",
     "karma-chrome-launcher": "^1.0.1",
     "karma-mocha": "^1.1.1",
