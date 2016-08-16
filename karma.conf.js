@@ -39,7 +39,13 @@ module.exports = function(config) {
           test: /\.js$/,
           exclude: path.resolve(__dirname, 'node_modules'),
           loader: 'babel'
-        }]
+        }, {
+          test: /\.json$/,
+          loader: 'json'
+        }],
+        noParse: [
+          /node_modules\/sinon\//,
+        ]
       },
       externals: {
         'react/addons': true,
