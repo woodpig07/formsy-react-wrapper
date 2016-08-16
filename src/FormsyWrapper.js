@@ -22,7 +22,7 @@ class FormsyFormWrapper extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isValid: false,
+      isAsyncValid: true,   // if <FormsyWrapper.Input /> has async validator, this will change to false when component mount
       formClass: ''
     }
   }
@@ -40,8 +40,16 @@ class FormsyFormWrapper extends Component {
     return asyncValidationRules
   }
 
-  setAsyncValidationState (isValid) {
-    this.setState({isValid: isValid})
+  setAsyncValidationState (isAsyncValid) {
+    // Invoke <Formsy.Form /> onInvalid() when async validation failed
+    const {onInvalid, onValid} = this.props
+    if (!isAsyncValid) {
+      onInvalid && onInvalid()
+    } else if (this.state.isSyncValid) {
+      // only Invoke <Formsy.Form /> onValid() when both async/sync validation success
+      onValid && onValid()
+    }
+    this.setState({isAsyncValid: isAsyncValid})
   }
 
   /* Porting <Formsy.Form /> reset() */
@@ -51,7 +59,7 @@ class FormsyFormWrapper extends Component {
 
   /* Porting <Formsy.Form /> getModel() */
   getModel () {
-    this.refs.formsy.getModel()
+    return this.refs.formsy.getModel()
   }
 
   /* Porting <Formsy.Form /> updateInputsWithError() */
@@ -62,25 +70,31 @@ class FormsyFormWrapper extends Component {
   /* Porting <Formsy.Form /> onValid() */
   onValid () {
     const {onValid} = this.props
-    const {isValid} = this.state
-    if (isValid) {
+    const {isAsyncValid} = this.state
+    // if this being invoked, the sync validation should success
+    this.setState({isSyncValid: true})
+
+    if (isAsyncValid) {
       return onValid && onValid()
-    }    
+    }
+    // onValid && onValid()
   }
 
   /* Porting <Formsy.Form /> onInvalid() */
   onInvalid () {
     const {onInvalid} = this.props
-    const {isValid} = this.state
-    if (!isValid) {
-      return onInvalid && onInvalid()
-    }    
+    // if this being invoked, the sync validation should success
+    this.setState({isSyncValid: false})
+
+    return onInvalid && onInvalid()  
   }
 
   /* Porting <Formsy.Form /> onChange() */
   onChange (currentValues, isChanged) {
     const {onChange} = this.props
+
     this.setState({formClass: ''})
+
     return onChange && onChange(currentValues, isChanged)
   }
 
@@ -94,8 +108,8 @@ class FormsyFormWrapper extends Component {
   /* Porting <Formsy.Form /> onValidSubmit() */
   onValidSubmit (data, resetForm, invalidateForm) {
     const {onValidSubmit} = this.props
-    const {isValid} = this.state
-    if (isValid) {
+    const {isAsyncValid} = this.state
+    if (isAsyncValid) {
       return onValidSubmit && onValidSubmit(data, resetForm, invalidateForm)
     }
     return false
@@ -104,11 +118,12 @@ class FormsyFormWrapper extends Component {
   /* Porting <Formsy.Form /> onSubmit() */
   onSubmit (data, resetForm, invalidateForm) {
     const {onSubmit} = this.props
-    const {isValid} = this.state
-    if (isValid) {
-      return onSubmit && onSubmit(data, resetForm, invalidateForm)
+    const {isAsyncValid} = this.state
+    // Invoke <Formsy.Form /> onInvalidSubmit() when async validation failed
+    if (!isAsyncValid) {
+      this.onInvalidSubmit(data, resetForm, invalidateForm)
     }
-    return false
+    onSubmit && onSubmit(data, resetForm, invalidateForm)
   }
 
   render () {
