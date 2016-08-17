@@ -14,6 +14,11 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha'],
 
+    client: {
+      mocha: {
+        timeout: 6000
+      }
+    },
 
     // list of files / patterns to load in the browser
     files: [
@@ -39,7 +44,13 @@ module.exports = function(config) {
           test: /\.js$/,
           exclude: path.resolve(__dirname, 'node_modules'),
           loader: 'babel'
-        }]
+        }, {
+          test: /\.json$/,
+          loader: 'json'
+        }],
+        noParse: [
+          /node_modules\/sinon\//,
+        ]
       },
       externals: {
         'react/addons': true,
