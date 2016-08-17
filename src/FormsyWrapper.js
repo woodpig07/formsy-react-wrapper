@@ -84,9 +84,10 @@ class FormsyFormWrapper extends Component {
   onInvalid () {
     const {onInvalid} = this.props
     // if this being invoked, the sync validation should success
-    this.setState({isSyncValid: false})
+    this.setState({isSyncValid: false}, () => {
+      onInvalid && onInvalid()
+    })
 
-    return onInvalid && onInvalid()  
   }
 
   /* Porting <Formsy.Form /> onChange() */
