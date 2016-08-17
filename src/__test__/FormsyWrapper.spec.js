@@ -9,6 +9,24 @@ import FormsyWrapper from '../FormsyWrapper'
 chai.use(chaiEnzyme())
 const expect = chai.expect
 
+var waitsInProgress = [];
+
+var waitFor = (test, message, done, timeLeft) => {
+  timeLeft = timeLeft === undefined ? 100 : timeLeft;
+  waitsInProgress.push(setTimeout(() => {
+    if (timeLeft <= 0) {
+      fail(message);
+      done();
+    } else if (test()) {
+      done();
+    } else {
+      waitFor(test, message, done, timeLeft - 10);
+    }
+  }, 10));
+};
+
+waitFor.clear = () => waitsInProgress.map(clearTimeout)
+
 describe('<FormsyWrapper.Form />', () => {
   it('should render <Formsy.Form /> with ref and contain no children', () => {
     const wrapper = mount(<FormsyWrapper.Form />)
@@ -33,8 +51,8 @@ describe('<FormsyWrapper.Form />', () => {
 })
 
 
-describe('A simple form with <FormsyWrapper.Form /> and <FormsyWrapper.Input />', () => {
-  
+describe.skip('A simple form with <FormsyWrapper.Form /> and <FormsyWrapper.Input />', () => {
+
   class FormFixture extends Component {
 
     handleChange () {
@@ -49,6 +67,7 @@ describe('A simple form with <FormsyWrapper.Form /> and <FormsyWrapper.Input />'
       console.log('onValid')
     }
     onInvalid () {
+      console.log(this.refs)
       console.log('onInvalid', this.refs.form.getModel())
     }
     onInvalidSubmit () {
@@ -132,5 +151,107 @@ describe('A simple form with <FormsyWrapper.Form /> and <FormsyWrapper.Input />'
     input.get(0).value = 'foo@bar.com'
     input.at(0).simulate('change')    
     expect(wrapper.find(FormsyWrapper.Input).at(1).find('div')).to.not.have.className('error')
+  })  
+})
+
+describe('A form with asynchronous validations', function () {
+
+  FormsyWrapper.addAsyncValidationRule('isUniqueEmail', (value, optionalVal) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (value === 'foo@bar.com') {
+          resolve('Success')
+        } else {
+          reject('Fail')
+        }
+      }, 100)
+    })
+  })
+
+  class FormFixture extends Component {
+
+    onValid () {
+      console.log('onValid')
+    }
+    onInvalid () {
+      console.log('onInvalid', this.refs.form2 && this.refs.form2.getModel())
+    }
+    onInvalidSubmit () {
+      console.log('onInvalidSubmit')
+    }
+    onValidSubmit () {
+      console.log('onValidSubmit')
+    }
+
+    render () {
+      return (
+        <FormsyWrapper.Form
+          ref='form2'
+          onValid={::this.onValid}
+          onInvalid={::this.onInvalid}
+          onValidSubmit={::this.onValidSubmit}
+          onInvalidSubmit={::this.onInvalidSubmit}>
+          <FormsyWrapper.Input
+            name='email'
+            required
+            value='fooxx@bar.com'
+            validations="isEmail"
+            asyncValidations='isUniqueEmail' />
+          <button type='submit'>Submit</button>
+        </FormsyWrapper.Form>
+      )
+    }
+  }
+
+  it('should invoke onInvalid() when async validation fail', function (done) {
+    sinon.spy(FormFixture.prototype, 'onInvalid')
+    const wrapper = mount(<FormFixture />)
+    const input = wrapper.find('input')
+
+    input.get(0).value = 'fooxx@bar.com'
+    input.simulate('change')
+
+    setTimeout(() => {
+      expect(FormFixture.prototype.onInvalid.called).to.be.true
+      done()
+    }, 300)
+  })
+
+  it('should invoke onValid() when async validation success', function (done) {
+    sinon.spy(FormFixture.prototype, 'onValid')
+    const wrapper = mount(<FormFixture />)
+    const input = wrapper.find('input')
+
+    input.get(0).value = 'foo@bar.com'
+    input.simulate('change')
+    setTimeout(() => {
+      wrapper.update()
+      expect(FormFixture.prototype.onValid.called).to.be.true
+      done()
+    }, 3000)
+  })
+
+  it('should add error class if async validation failed', function (done) {
+    const wrapper = mount(<FormFixture />)
+    const input = wrapper.find('input')
+    input.get(0).value = 'fooxx@bar.com'
+    input.at(0).simulate('change')
+
+    setTimeout(() => {
+      expect(wrapper.find(FormsyWrapper.Input).at(0).find('div')).to.have.className('error')
+      done()
+    }, 5000)
+  })  
+
+  it('should not have error class if async validation success', function (done) {
+    const wrapper = mount(<FormFixture />)
+    const input = wrapper.find('input')
+    input.get(0).value = 'foo@bar.com'
+    input.at(0).simulate('change')
+
+    setTimeout(() => {
+      expect(wrapper.find(FormsyWrapper.Input).at(0).find('div')).to.not.have.className('error')
+      done()
+    }, 5000)
   })  
 })

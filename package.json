@@ -56,7 +56,7 @@
     "react": "^15.3.0",
     "react-addons-test-utils": "^15.3.0",
     "react-dom": "^15.3.0",
-    "sinon": "^1.17.5",
+    "sinon": "2.0.0-pre",
     "snazzy": "^4.0.1",
     "style-loader": "^0.13.1",
     "stylus-loader": "^2.1.2",
