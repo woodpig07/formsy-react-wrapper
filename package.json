@@ -1,6 +1,6 @@
 {
   "name": "formsy-react-wrapper",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Enhanced formsy-react component to handle asynchronous validations",
   "repository": {
     "type": "git",
