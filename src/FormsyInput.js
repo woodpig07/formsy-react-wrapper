@@ -60,7 +60,7 @@ class BaseInput extends Component {
 
   handleChange (e) {
     // hide response error message if any
-    this.setState({responseError: null})
+    this.setState({responseError: null, hasAsyncError: false})
 
     let value = e.target.value
     let {asyncValidations} = this.props
@@ -105,13 +105,14 @@ class BaseInput extends Component {
     return Promise.all(asyncValidationPromise)
       .then(() => {
         formsyWrapper.setAsyncValidationState(true)
-        return this.setState({isValidating: false})
+        return this.setState({isValidating: false, hasAsyncError: false})
       })
       .catch(err => {
         var msg = this.getAsyncErrorMessage(err.validatorName)
 
         formsyWrapper.setAsyncValidationState(false)
-        return this.setState({isValidating: false, responseError: msg})
+
+        return this.setState({isValidating: false, responseError: msg, hasAsyncError: true})
       })
   }
 
@@ -136,7 +137,7 @@ class BaseInput extends Component {
       getErrorMessage
     } = this.props
     let classes = classnames(className, {
-      'error': showError() || this.state.responseError,
+      'error': showError() || this.state.hasAsyncError,
       'required': showRequired(),
       'validating': this.state.isValidating
     })
