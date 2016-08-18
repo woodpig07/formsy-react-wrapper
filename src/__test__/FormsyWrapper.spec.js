@@ -51,7 +51,7 @@ describe('<FormsyWrapper.Form />', () => {
 })
 
 
-describe.skip('A simple form with <FormsyWrapper.Form /> and <FormsyWrapper.Input />', () => {
+describe('A simple form with <FormsyWrapper.Form /> and <FormsyWrapper.Input />', () => {
 
   class FormFixture extends Component {
 
