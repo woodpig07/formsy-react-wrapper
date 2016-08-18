@@ -9,24 +9,6 @@ import FormsyWrapper from '../FormsyWrapper'
 chai.use(chaiEnzyme())
 const expect = chai.expect
 
-var waitsInProgress = [];
-
-var waitFor = (test, message, done, timeLeft) => {
-  timeLeft = timeLeft === undefined ? 100 : timeLeft;
-  waitsInProgress.push(setTimeout(() => {
-    if (timeLeft <= 0) {
-      fail(message);
-      done();
-    } else if (test()) {
-      done();
-    } else {
-      waitFor(test, message, done, timeLeft - 10);
-    }
-  }, 10));
-};
-
-waitFor.clear = () => waitsInProgress.map(clearTimeout)
-
 describe('<FormsyWrapper.Form />', () => {
   it('should render <Formsy.Form /> with ref and contain no children', () => {
     const wrapper = mount(<FormsyWrapper.Form />)
@@ -51,7 +33,7 @@ describe('<FormsyWrapper.Form />', () => {
 })
 
 
-describe.skip('A simple form with <FormsyWrapper.Form /> and <FormsyWrapper.Input />', () => {
+describe('A simple form with <FormsyWrapper.Form /> and <FormsyWrapper.Input />', () => {
 
   class FormFixture extends Component {
 
@@ -67,8 +49,7 @@ describe.skip('A simple form with <FormsyWrapper.Form /> and <FormsyWrapper.Inpu
       console.log('onValid')
     }
     onInvalid () {
-      console.log(this.refs)
-      console.log('onInvalid', this.refs.form.getModel())
+      console.log('onInvalid')
     }
     onInvalidSubmit () {
       console.log('onInvalidSubmit')
@@ -174,7 +155,7 @@ describe('A form with asynchronous validations', function () {
       console.log('onValid')
     }
     onInvalid () {
-      console.log('onInvalid', this.refs.form2 && this.refs.form2.getModel())
+      console.log('onInvalid')
     }
     onInvalidSubmit () {
       console.log('onInvalidSubmit')
