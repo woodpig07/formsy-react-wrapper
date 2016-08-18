@@ -67,7 +67,7 @@ module.exports = function(config) {
       'karma-chrome-launcher',
       // 'karma-coverage',
       'karma-mocha',
-      // 'karma-phantomjs-launcher',
+      'karma-phantomjs-launcher',
       'karma-sourcemap-loader',
       'karma-spec-reporter',
       'karma-webpack'
@@ -98,12 +98,12 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['PhantomJS'],
 
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: true,
 
     // Concurrency level
     // how many browser should be started simultaneous

@@ -1,3 +1,5 @@
+import 'babel-polyfill'
+
 import React, {Component, PropTypes} from 'react'
 import Formsy from 'formsy-react'
 import FormsyInput from './FormsyInput'
