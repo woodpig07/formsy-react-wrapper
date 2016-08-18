@@ -1,6 +1,13 @@
-# formsy-react-wrapper
+# formsy-react-wrapper [![Build Status](https://travis-ci.org/woodpig07/formsy-react-wrapper.svg?branch=master)](https://travis-ci.org/woodpig07/formsy-react-wrapper)
 
 Added a wrapper to [`formsy-react`](https://github.com/christianalfoni/formsy-react) to have asynchronous validations and translations for error messages.
+
+## Install
+
+```
+npm install formsy-react-wrapper
+```
+
 
 ## How to use
 
