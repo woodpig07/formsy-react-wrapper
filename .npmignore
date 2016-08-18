@@ -1,4 +1,5 @@
 .babelrc
 karma.conf.js
+.travis.yml
 example/
 src/__test__/
